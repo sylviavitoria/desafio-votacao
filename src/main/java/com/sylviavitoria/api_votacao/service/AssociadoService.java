@@ -12,8 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class AssociadoService implements IAssociado {
 
         return associadoMapper.toResponse(associadoSalvo);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public AssociadoResponse buscarPorId(Long id) {
@@ -54,8 +55,16 @@ public class AssociadoService implements IAssociado {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<AssociadoListarResponse> listarTodos(Pageable pageable) {
-        log.info("Listando associados com paginação");
+    public Page<AssociadoListarResponse> listarTodos(int page, int size, String sort) {
+        log.info("Listando associados com paginação: página {}, tamanho {}, ordenação {}", page, size, sort);
+
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            pageable = PageRequest.of(page, size, Sort.by(sort));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("nome"));
+        }
+
         return associadoRepository.findAll(pageable)
                 .map(associadoMapper::toListarResponse);
     }
