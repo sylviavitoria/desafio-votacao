@@ -7,6 +7,8 @@ import com.sylviavitoria.api_votacao.exception.EntityNotFoundException;
 import com.sylviavitoria.api_votacao.mapper.AssociadoMapper;
 import com.sylviavitoria.api_votacao.model.Associado;
 import com.sylviavitoria.api_votacao.repository.AssociadoRepository;
+import com.sylviavitoria.api_votacao.repository.PautaRepository;
+
 import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +34,9 @@ public class AsssociadoServiceTest {
     
     @Mock
     private AssociadoMapper associadoMapper;
+
+    @Mock 
+    private PautaRepository pautaRepository;
     
     @InjectMocks
     private AssociadoService associadoService;
@@ -242,16 +247,17 @@ public class AsssociadoServiceTest {
     @Test
     @DisplayName("Deve deletar um associado com sucesso")
     void deletarAssociadoSucesso() {
-
         Long id = 1L;
         when(associadoRepository.findById(id)).thenReturn(Optional.of(associado));
+        when(pautaRepository.existsByCriadorId(id)).thenReturn(false);
         doNothing().when(associadoRepository).delete(associado);
-        
+    
         associadoService.deletar(id);
-        
+    
         verify(associadoRepository).findById(id);
+        verify(pautaRepository).existsByCriadorId(id);
         verify(associadoRepository).delete(associado);
-        verifyNoMoreInteractions(associadoRepository);
+        verifyNoMoreInteractions(associadoRepository, pautaRepository);
         verifyNoInteractions(associadoMapper);
     }
     

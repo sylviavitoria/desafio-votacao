@@ -7,6 +7,8 @@ import com.sylviavitoria.api_votacao.interfaces.IAssociado;
 import com.sylviavitoria.api_votacao.mapper.AssociadoMapper;
 import com.sylviavitoria.api_votacao.model.Associado;
 import com.sylviavitoria.api_votacao.repository.AssociadoRepository;
+import com.sylviavitoria.api_votacao.repository.PautaRepository;
+
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sylviavitoria.api_votacao.exception.BusinessException;
 import com.sylviavitoria.api_votacao.exception.EntityNotFoundException;
 
 @Slf4j
@@ -27,6 +30,7 @@ public class AssociadoService implements IAssociado {
 
     private final AssociadoRepository associadoRepository;
     private final AssociadoMapper associadoMapper;
+    private final PautaRepository pautaRepository;
 
     @Override
     @Transactional
@@ -90,6 +94,10 @@ public class AssociadoService implements IAssociado {
         Associado associado = associadoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Associado não encontrado"));
 
+        if (pautaRepository.existsByCriadorId(id)) {
+        throw new BusinessException("Não é possível excluir um associado que possui pautas vinculadas");
+        }
+        
         associadoRepository.delete(associado);
     }
 }
