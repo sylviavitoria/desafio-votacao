@@ -3,10 +3,10 @@
 
 ## ✅ Funcionalidades
 
-- Cadastro, listagem e exclusão de **associados**
+- Cadastro e listagem por id de **associados**
 - Atualização e exclusão de associados
 - Paginação e ordenação na listagem de associados
-- Documentação com Swagger (OpenAPI 3)
+- Documentação com Swagger
 
 ---
 
@@ -19,6 +19,8 @@
 - Jakarta Validation
 - Swagger (OpenAPI)
 - Lombok
+- MapStruct
+- FlyWay
 
 ---
 
