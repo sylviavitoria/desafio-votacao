@@ -2,6 +2,7 @@ package com.sylviavitoria.api_votacao.controller;
 
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sylviavitoria.api_votacao.dto.PautaAtualizarRequest;
@@ -19,6 +21,7 @@ import com.sylviavitoria.api_votacao.dto.PautaResponse;
 import com.sylviavitoria.api_votacao.interfaces.IPauta;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,6 +58,20 @@ public class PautaController {
     @GetMapping("/{id}")
     public ResponseEntity<PautaResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(iPauta.buscarPorId(id));
+    }
+
+    @GetMapping
+    @Operation(summary = "Listar todas as pautas", description = "Retorna uma lista paginada de todas as pautas cadastradas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem-sucedida"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    public ResponseEntity<Page<PautaResponse>> listarTodos(
+            @Parameter(description = "Número da página (começa em 0)", example = "0") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Tamanho da página", example = "10") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Campo para ordenação (ex: titulo, dataCriacao, status)", example = "titulo") @RequestParam(required = false) String sort) {
+
+        return ResponseEntity.ok(iPauta.listarTodos(page, size, sort));
     }
 
     @Operation(summary = "Atualizar pauta", description = "Atualiza os dados de uma pauta existente")

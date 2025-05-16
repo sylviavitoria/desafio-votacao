@@ -1,5 +1,9 @@
 package com.sylviavitoria.api_votacao.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +59,22 @@ public class PautaService implements IPauta {
                 .orElseThrow(() -> new EntityNotFoundException("Pauta não encontrada com ID: " + id));
 
         return pautaMapper.toResponse(pauta);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PautaResponse> listarTodos(int page, int size, String sort) {
+        log.info("Listando pauta com paginação: página {}, tamanho {}, ordenação {}", page, size, sort);
+
+        Pageable pageable;
+        if (sort != null && !sort.isEmpty()) {
+            pageable = PageRequest.of(page, size, Sort.by(sort));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("titulo"));
+        }
+
+            return pautaRepository.findAll(pageable)  
+            .map(pautaMapper::toResponse); 
     }
 
     @Override
