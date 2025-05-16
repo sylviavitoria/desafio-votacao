@@ -56,4 +56,12 @@ public class GlobalExceptionHandler {
         errors.put("erro", "Não é possível executar esta operação devido a restrições de integridade de dados");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException ex) {
+        log.error("Estado ilegal: {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("erro", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
 }
