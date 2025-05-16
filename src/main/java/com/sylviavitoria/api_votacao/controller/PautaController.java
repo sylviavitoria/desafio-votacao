@@ -2,13 +2,16 @@ package com.sylviavitoria.api_votacao.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sylviavitoria.api_votacao.dto.PautaAtualizarRequest;
 import com.sylviavitoria.api_votacao.dto.PautaRequest;
 import com.sylviavitoria.api_votacao.dto.PautaResponse;
 import com.sylviavitoria.api_votacao.interfaces.IPauta;
@@ -34,6 +37,18 @@ public class PautaController {
     @GetMapping("/{id}")
     public ResponseEntity<PautaResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(iPauta.buscarPorId(id));
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<PautaResponse> atualizar(@PathVariable Long id,
+            @RequestBody @Valid PautaAtualizarRequest request) {
+        return ResponseEntity.ok(iPauta.atualizar(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        iPauta.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

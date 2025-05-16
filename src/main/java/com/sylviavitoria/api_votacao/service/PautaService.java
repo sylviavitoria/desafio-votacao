@@ -3,9 +3,11 @@ package com.sylviavitoria.api_votacao.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sylviavitoria.api_votacao.dto.PautaAtualizarRequest;
 import com.sylviavitoria.api_votacao.dto.PautaRequest;
 import com.sylviavitoria.api_votacao.dto.PautaResponse;
 import com.sylviavitoria.api_votacao.enums.StatusPauta;
+import com.sylviavitoria.api_votacao.exception.BusinessException;
 import com.sylviavitoria.api_votacao.exception.EntityNotFoundException;
 import com.sylviavitoria.api_votacao.interfaces.IPauta;
 import com.sylviavitoria.api_votacao.mapper.PautaMapper;
@@ -53,5 +55,40 @@ public class PautaService implements IPauta {
                 .orElseThrow(() -> new EntityNotFoundException("Pauta não encontrada com ID: " + id));
 
         return pautaMapper.toResponse(pauta);
+    }
+
+    @Override
+    @Transactional
+    public PautaResponse atualizar(Long id, PautaAtualizarRequest request) {
+        log.info("Atualizando pauta com ID: {}", id);
+        Pauta pauta = pautaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pauta não encontrada com ID: " + id));
+
+        if (pauta.getStatus() != StatusPauta.CRIADA) {
+            throw new BusinessException("Não é possível editar uma pauta que já está em votação ou encerrada");
+        }
+
+        pauta.setTitulo(request.getTitulo());
+        pauta.setDescricao(request.getDescricao());
+
+        Pauta pautaAtualizada = pautaRepository.save(pauta);
+        log.info("Pauta atualizada com sucesso: ID {}", pautaAtualizada.getId());
+
+        return pautaMapper.toResponse(pautaAtualizada);
+    }
+
+    @Override
+    @Transactional
+    public void deletar(Long id) {
+        log.info("Deletando pauta com ID: {}", id);
+        Pauta pauta = pautaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pauta não encontrada com ID: " + id));
+
+        if (pauta.getStatus() == StatusPauta.EM_VOTACAO) {
+            throw new IllegalStateException("Não é possível deletar uma pauta que está em votação");
+        }
+
+        pautaRepository.delete(pauta);
+        log.info("Pauta deletada com sucesso: ID {}", id);
     }
 }
