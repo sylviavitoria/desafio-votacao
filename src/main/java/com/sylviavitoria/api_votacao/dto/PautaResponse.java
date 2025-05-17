@@ -28,6 +28,12 @@ public class PautaResponse {
     @Schema(description = "Status atual da pauta", example = "CRIADA", allowableValues = {"CRIADA", "EM_VOTACAO", "ENCERRADA"})
     private StatusPauta status;
     
+    @Schema(description = "Total de votos SIM", example = "15")
+    private Long totalVotosSim;
+    
+    @Schema(description = "Total de votos NÃO", example = "5")
+    private Long totalVotosNao;
+    
     @Schema(description = "Informações do criador da pauta")
     private AssociadoDTO criador;
 }
