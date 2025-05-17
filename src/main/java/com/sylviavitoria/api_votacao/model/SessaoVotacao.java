@@ -39,13 +39,11 @@ public class SessaoVotacao {
 
     @Enumerated(EnumType.STRING)
     private StatusSessao status = StatusSessao.FECHADA;
-    
 
     public boolean estaAberta() {
         LocalDateTime agora = LocalDateTime.now();
-        return this.status == StatusSessao.ABERTA &&
-                agora.isAfter(this.dataAbertura) &&
-                agora.isBefore(this.dataFechamento);
+        return (agora.isAfter(this.dataAbertura) || agora.isEqual(this.dataAbertura)) &&
+                (agora.isBefore(this.dataFechamento) || agora.isEqual(this.dataFechamento));
     }
 
     public boolean deveSerFinalizada() {
@@ -56,7 +54,7 @@ public class SessaoVotacao {
     public void finalizar() {
         this.status = StatusSessao.FINALIZADA;
         if (this.pauta != null) {
-            this.pauta.setStatus(StatusPauta.ENCERRADA);
+            this.pauta.setStatus(StatusPauta.EMPATADA);
         }
     }
 }
