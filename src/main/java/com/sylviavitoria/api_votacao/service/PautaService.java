@@ -1,5 +1,7 @@
 package com.sylviavitoria.api_votacao.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sylviavitoria.api_votacao.dto.PautaAtualizarRequest;
 import com.sylviavitoria.api_votacao.dto.PautaRequest;
 import com.sylviavitoria.api_votacao.dto.PautaResponse;
+import com.sylviavitoria.api_votacao.enums.OpcaoVoto;
 import com.sylviavitoria.api_votacao.enums.StatusPauta;
+import com.sylviavitoria.api_votacao.enums.StatusSessao;
 import com.sylviavitoria.api_votacao.exception.BusinessException;
 import com.sylviavitoria.api_votacao.exception.EntityNotFoundException;
 import com.sylviavitoria.api_votacao.interfaces.IPauta;
@@ -19,6 +23,8 @@ import com.sylviavitoria.api_votacao.model.Associado;
 import com.sylviavitoria.api_votacao.model.Pauta;
 import com.sylviavitoria.api_votacao.repository.AssociadoRepository;
 import com.sylviavitoria.api_votacao.repository.PautaRepository;
+import com.sylviavitoria.api_votacao.repository.SessaoVotacaoRepository;
+import com.sylviavitoria.api_votacao.repository.VotoRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +37,8 @@ public class PautaService implements IPauta {
     private final PautaRepository pautaRepository;
     private final AssociadoRepository associadoRepository;
     private final PautaMapper pautaMapper;
+    private final SessaoVotacaoRepository sessaoVotacaoRepository;
+    private final VotoRepository votoRepository;
 
     @Override
     @Transactional
@@ -52,17 +60,47 @@ public class PautaService implements IPauta {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public PautaResponse buscarPorId(Long id) {
         log.info("Buscando pauta por ID: {}", id);
         Pauta pauta = pautaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pauta não encontrada com ID: " + id));
 
+        verificarEAtualizarStatusPauta(pauta);
+
         return pautaMapper.toResponse(pauta);
     }
 
+    @Transactional
+    private void verificarEAtualizarStatusPauta(Pauta pauta) {
+        sessaoVotacaoRepository.findByPautaId(pauta.getId()).ifPresent(sessao -> {
+            LocalDateTime agora = LocalDateTime.now();
+
+            if (sessao.getStatus() == StatusSessao.ABERTA && agora.isAfter(sessao.getDataFechamento())) {
+                log.info("Finalizando sessão e contabilizando votos da pauta ID: {}", pauta.getId());
+
+                long votosSim = votoRepository.countByPautaIdAndOpcao(pauta.getId(), OpcaoVoto.SIM);
+                long votosNao = votoRepository.countByPautaIdAndOpcao(pauta.getId(), OpcaoVoto.NAO);
+
+                if (votosSim > votosNao) {
+                    pauta.setStatus(StatusPauta.APROVADA);
+                } else if (votosNao > votosSim) {
+                    pauta.setStatus(StatusPauta.RECUSADA);
+                } else {
+                    pauta.setStatus(StatusPauta.EMPATADA);
+                }
+
+                pautaRepository.save(pauta);
+
+                sessao.setStatus(StatusSessao.FINALIZADA);
+                sessaoVotacaoRepository.save(sessao);
+
+                log.info("Sessão finalizada. Resultado da votação - SIM: {}, NÃO: {}, Status: {}",
+                        votosSim, votosNao, pauta.getStatus());
+            }
+        });
+    }
+
     @Override
-    @Transactional(readOnly = true)
     public Page<PautaResponse> listarTodos(int page, int size, String sort) {
         log.info("Listando pauta com paginação: página {}, tamanho {}, ordenação {}", page, size, sort);
 
@@ -73,8 +111,11 @@ public class PautaService implements IPauta {
             pageable = PageRequest.of(page, size, Sort.by("titulo"));
         }
 
-            return pautaRepository.findAll(pageable)  
-            .map(pautaMapper::toResponse); 
+        Page<Pauta> pautas = pautaRepository.findAll(pageable);
+
+        pautas.getContent().forEach(this::verificarEAtualizarStatusPauta);
+
+        return pautas.map(pautaMapper::toResponse);
     }
 
     @Override
