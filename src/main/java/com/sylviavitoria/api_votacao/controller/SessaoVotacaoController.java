@@ -22,6 +22,7 @@ import com.sylviavitoria.api_votacao.interfaces.ISessaoVotacao;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -38,7 +39,21 @@ public class SessaoVotacaoController {
         private final ISessaoVotacao sessaoVotacao;
 
         @Operation(summary = "Criar uma nova sessão de votação", description = "Cria uma nova sessão de votação para uma pauta. É possível abrir imediatamente informando duracaoMinutos, "
-                        + "ou agendar para datas específicas informando dataInicio e dataFim.")
+                        + "ou agendar para datas específicas informando dataInicio e dataFim.", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = {
+                                        @ExampleObject(name = "Abertura Imediata", value = """
+                                                        {
+                                                          "pautaId": 1,
+                                                          "duracaoMinutos": 5
+                                                        }
+                                                        """),
+                                        @ExampleObject(name = "Agendamento", value = """
+                                                        {
+                                                          "pautaId": 1,
+                                                          "dataInicio": "2025-05-25T22:00:00",
+                                                          "dataFim": "2025-05-26T11:00:00"
+                                                        }
+                                                        """)
+                        })))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "201", description = "Sessão de votação criada com sucesso"),
                         @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content(schema = @Schema(implementation = Map.class))),
@@ -74,12 +89,23 @@ public class SessaoVotacaoController {
                 return ResponseEntity.ok(sessaoVotacao.listarTodos(page, size, sort));
         }
 
-        @Operation(summary = "Atualizar período da sessão", description = "Permite estender o período de votação de uma sessão")
+        @Operation(summary = "Atualizar período da sessão", description = "Permite estender o período de votação", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = {
+                        @ExampleObject(name = "Adicionar Minutos", value = """
+                                        {
+                                          "minutosAdicionais": 30
+                                        }
+                                        """),
+                        @ExampleObject(name = "Nova Data Fim", value = """
+                                        {
+                                          "dataFim": "2025-05-27T00:00:00"
+                                        }
+                                        """)
+        })))
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Período atualizado com sucesso"),
-                        @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(schema = @Schema(implementation = Map.class))),
-                        @ApiResponse(responseCode = "404", description = "Sessão não encontrada", content = @Content(schema = @Schema(implementation = Map.class))),
-                        @ApiResponse(responseCode = "409", description = "Sessão já finalizada", content = @Content(schema = @Schema(implementation = Map.class)))
+                        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                        @ApiResponse(responseCode = "404", description = "Sessão não encontrada"),
+                        @ApiResponse(responseCode = "409", description = "Sessão já finalizada")
         })
         @PutMapping("/{id}/periodo")
         public ResponseEntity<SessaoVotacaoResponse> atualizarPeriodo(
