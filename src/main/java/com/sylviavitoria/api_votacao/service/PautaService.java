@@ -71,7 +71,7 @@ public class PautaService implements IPauta {
     }
 
     @Transactional
-    private void verificarEAtualizarStatusPauta(Pauta pauta) {
+    public void verificarEAtualizarStatusPauta(Pauta pauta) {
         sessaoVotacaoRepository.findByPautaId(pauta.getId()).ifPresent(sessao -> {
             LocalDateTime agora = LocalDateTime.now();
 
