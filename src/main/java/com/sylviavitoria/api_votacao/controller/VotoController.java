@@ -7,7 +7,7 @@ import com.sylviavitoria.api_votacao.dto.ResultadoVotacaoResponse;
 import com.sylviavitoria.api_votacao.dto.VotoAtualizarRequest;
 import com.sylviavitoria.api_votacao.dto.VotoRequest;
 import com.sylviavitoria.api_votacao.dto.VotoResponse;
-import com.sylviavitoria.api_votacao.service.VotoService;
+import com.sylviavitoria.api_votacao.interfaces.IVoto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Votos", description = "API para gerenciamento de votos")
 public class VotoController {
 
-    private final VotoService votoService;
+    private final IVoto voto;
 
     @Operation(summary = "Registrar voto", description = "Registra o voto de um associado em uma pauta")
     @ApiResponses(value = {
@@ -33,7 +33,7 @@ public class VotoController {
     })
     @PostMapping
     public ResponseEntity<VotoResponse> votar(@RequestBody @Valid VotoRequest request) {
-        VotoResponse response = votoService.registrarVoto(request);
+        VotoResponse response = voto.registrarVoto(request);
         return ResponseEntity.ok(response);
     }
 
@@ -44,7 +44,7 @@ public class VotoController {
             @ApiResponse(responseCode = "404", description = "Voto não encontrado")
     })
     public ResponseEntity<VotoResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(votoService.buscarPorId(id));
+        return ResponseEntity.ok(voto.buscarPorId(id));
     }
 
     @Operation(summary = "Consultar resultado", description = "Retorna o resultado da votação de uma pauta")
@@ -54,7 +54,7 @@ public class VotoController {
     })
     @GetMapping("/pautas/{pautaId}/resultado")
     public ResponseEntity<ResultadoVotacaoResponse> consultarResultado(@PathVariable Long pautaId) {
-        return ResponseEntity.ok(votoService.consultarResultado(pautaId));
+        return ResponseEntity.ok(voto.consultarResultado(pautaId));
     }
 
     @PutMapping("/{id}")
@@ -67,7 +67,7 @@ public class VotoController {
     public ResponseEntity<VotoResponse> atualizar(
             @PathVariable Long id,
             @RequestBody @Valid VotoAtualizarRequest request) {
-        return ResponseEntity.ok(votoService.atualizarVoto(id, request));
+        return ResponseEntity.ok(voto.atualizarVoto(id, request));
     }
 
 }
