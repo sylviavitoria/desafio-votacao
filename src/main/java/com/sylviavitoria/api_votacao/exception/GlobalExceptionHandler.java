@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,5 +66,24 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         errors.put("erro", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.error("Erro ao converter mensagem: {}", ex.getMessage());
+
+        Map<String, String> errors = new HashMap<>();
+        String mensagem;
+
+        if (ex.getMessage().contains("24:")) {
+            mensagem = "Para representar meia-noite use 00:00:00 ao invés de 24:00:00";
+        } else if (ex.getCause() instanceof InvalidFormatException || ex.getMessage().contains("LocalDateTime")) {
+            mensagem = "Formato de data/hora inválido. As horas devem estar entre 00 e 23";
+        } else {
+            mensagem = "Erro ao processar a requisição. Verifique o formato dos dados";
+        }
+
+        errors.put("erro", mensagem);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
