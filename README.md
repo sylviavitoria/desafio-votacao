@@ -147,7 +147,7 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 ### 🔹 Associados
 ### Criar um associado
 - **POST** `/api/v1/associados` 
-```
+```json
 {
     "nome": "João Silva",
     "cpf": "12345678781",
@@ -160,7 +160,7 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 **GET** `/api/v1/associados`
 ###  Atualizar um associado
 **PUT**  `/api/v1/associados/{id}` 
-```
+```json
   {
     "nome": "Silva",
     "cpf": "12345678899",
@@ -289,6 +289,7 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
     "opcao": "NAO"
 }
 ```
+**GET** `/api/v1/votos/pautas/{pautaId}/resultado`
 
 ---
 
