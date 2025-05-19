@@ -72,7 +72,7 @@ class SessaoVotacaoControllerTest {
         @Test
         @DisplayName("Deve criar sessão com sucesso")
         void criarSessaoSucesso() throws Exception {
-              
+
                 ArgumentCaptor<SessaoVotacaoRequest> requestCaptor = ArgumentCaptor
                                 .forClass(SessaoVotacaoRequest.class);
 
@@ -174,9 +174,9 @@ class SessaoVotacaoControllerTest {
         @Test
         @DisplayName("Deve atualizar período da sessão com sucesso")
         void atualizarPeriodoSucesso() throws Exception {
-                
+
                 Long id = 1L;
-                LocalDateTime novaDataFim = agora.plusHours(1).withNano(0); 
+                LocalDateTime novaDataFim = agora.plusHours(1).withNano(0);
 
                 SessaoVotacaoAtualizarRequest atualizarRequest = new SessaoVotacaoAtualizarRequest();
                 atualizarRequest.setDataFim(novaDataFim);
@@ -219,6 +219,27 @@ class SessaoVotacaoControllerTest {
                 verify(sessaoVotacao).atualizarPeriodo(eq(id),
                                 argThat(request -> request.getDataFim().withNano(0).isEqual(novaDataFim)));
                 verifyNoMoreInteractions(sessaoVotacao);
+        }
+
+        @Test
+        @DisplayName("Deve retornar bad request quando horário inválido")
+        void criarSessaoHorarioInvalido() throws Exception {
+                String requestBody = """
+                                {
+                                    "pautaId": 1,
+                                    "dataInicio": "2025-05-19T25:00:00",
+                                    "dataFim": "2025-05-19T11:00:00"
+                                }
+                                """;
+
+                mockMvc.perform(post("/api/v1/sessoes")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.erro")
+                                                .value("Formato de data/hora inválido. As horas devem estar entre 00 e 23"));
+
+                verifyNoInteractions(sessaoVotacao);
         }
 
 }
