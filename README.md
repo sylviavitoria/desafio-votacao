@@ -28,7 +28,12 @@ Lembre de deixar todas as orientações necessárias para executar o seu código
 
 ### Tarefa Bônus 3 - Versionamento da API
 
-○ Como você versionaria a API da sua aplicação? Que estratégia usar?
+### Como você versionaria a API da sua aplicação? Que estratégia usar?
+Estratégia atual no projeto utiliza versionamento via URI. A aplicação já utiliza uma abordagem de versionamento no caminho:
+- `/api/v1/associados`
+- `/api/v1/pautas`
+- `/api/v1/sessoes`
+- `/api/v1/votos`
 
 ## O que será analisado
 
