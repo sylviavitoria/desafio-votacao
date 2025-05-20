@@ -26,32 +26,6 @@ Lembre de deixar todas as orientações necessárias para executar o seu código
 
 ### Tarefas bônus
 
-- Tarefa Bônus 1 - Integração com sistemas externos
-  - Criar uma Facade/Client Fake que retorna aleátoriamente se um CPF recebido é válido ou não.
-  - Caso o CPF seja inválido, a API retornará o HTTP Status 404 (Not found). Você pode usar geradores de CPF para gerar CPFs válidos
-  - Caso o CPF seja válido, a API retornará se o usuário pode (ABLE_TO_VOTE) ou não pode (UNABLE_TO_VOTE) executar a operação. Essa operação retorna resultados aleatórios, portanto um mesmo CPF pode funcionar em um teste e não funcionar no outro.
-
-```
-// CPF Ok para votar
-{
-    "status": "ABLE_TO_VOTE
-}
-// CPF Nao Ok para votar - retornar 404 no client tb
-{
-    "status": "UNABLE_TO_VOTE
-}
-```
-
-Exemplos de retorno do serviço
-
-### Tarefa Bônus 2 - Performance
-
-- Imagine que sua aplicação possa ser usada em cenários que existam centenas de
-  milhares de votos. Ela deve se comportar de maneira performática nesses
-  cenários
-- Testes de performance são uma boa maneira de garantir e observar como sua
-  aplicação se comporta
-
 ### Tarefa Bônus 3 - Versionamento da API
 
 ○ Como você versionaria a API da sua aplicação? Que estratégia usar?
@@ -82,11 +56,7 @@ Exemplos de retorno do serviço
   deixe claro caso haja instruções especiais para execução do mesmo
   Classificação da informação: Uso Interno
 
-## Anexo 1
 
-### Introdução
-
-A seguir serão detalhados os tipos de tela que o cliente mobile suporta, assim como os tipos de campos disponíveis para a interação do usuário.
 
 ### Tipo de tela – FORMULARIO
 
@@ -121,14 +91,51 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 
 ## ✅ Funcionalidades
 
-- Cadastro e listagem por id de **associados**
-- Atualização e exclusão de associados
-- Paginação e ordenação na listagem de associados
-- Documentação com Swagger
+### Associados
+
+- Cadastro e listagem por id de associados  
+- Atualização e exclusão de associados  
+- Paginação e ordenação na listagem de associados  
+
+### Pautas
+
+- Cadastro de novas pautas com título, descrição e criador  
+- Consulta de pauta por ID com status atualizado  
+- Listagem de pautas com paginação e ordenação  
+- Atualização de pautas existentes (apenas no status CRIADA)  
+- Exclusão de pautas (quando não estão em votação)  
+- Contagem automática de votos  
+
+### Sessões de Votação
+
+- Abertura de sessões de votação para pautas  
+- Criação imediata ou agendamento para datas futuras  
+- Configuração de duração personalizada ou padrão (1 minuto)  
+- Consulta da sessão 
+- Listagem de sessões com paginação e ordenação  
+- Atualização do período de votação (extensão do prazo)  
+
+### Votos
+
+- Registro de votos de associados em pautas  
+- Validação de sessão aberta e voto único por associado  
+- Consulta de votos registrados por ID  
+- Atualização de votos durante a sessão aberta  
+- Consulta de resultado da votação 
+
+### Recursos Adicionais
+
+- Documentação completa com Swagger/OpenAPI  
+- Gerenciamento de exceções com mensagens amigáveis  
+- Validação de dados em todas as operações  
+- Logs detalhados para auditoria e monitoramento  
+- Containerização com Docker  
+- Migração de banco de dados com Flyway  
+- Perfis configuráveis para diferentes ambientes
 
 ---
 
-## 🔧 Tecnologias utilizadas
+##  Tecnologias utilizadas
 
 - Java 21+
 - Spring Boot
@@ -146,20 +153,20 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 
 ### 🔹 Associados
 ### Criar um associado
-- **POST** `/api/v1/associados` 
+- **POST** `http://localhost:8080/api/v1/associados` 
 ```json
 {
     "nome": "João Silva",
-    "cpf": "12345678781",
+    "cpf": "15345534769",
     "email": "joao.silva@email.com"
 }
 ```
 ### Buscar associado por ID
-**GET** `/api/v1/associados/{id}` 
+**GET** `http://localhost:8080/api/v1/associados/{id}` 
 ### Listar associados (com paginação e ordenação)
-**GET** `/api/v1/associados`
+**GET** `http://localhost:8080/api/v1/associados`
 ###  Atualizar um associado
-**PUT**  `/api/v1/associados/{id}` 
+**PUT**  `http://localhost:8080/api/v1/associados/{id}` 
 ```json
   {
     "nome": "Silva",
@@ -167,15 +174,15 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
     "email": "silva.silva@email.com"
   }
 ```
-
-- `DELETE /api/v1/associados/{id}` – Excluir um associado
+### Excluir um associado
+- **DELETE** `http://localhost:8080/api/v1/associados/{id}` 
 
 ---
 
 ## 🔹 Pautas
 
 ###  Criar uma pauta  
-**POST** `/api/v1/pautas`
+**POST** `http://localhost:8080/api/v1/pautas`
 
 ```json
 {
@@ -186,13 +193,13 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 ```
 
 ###  Buscar pauta por ID  
-**GET** `/api/v1/pautas/{id}`
+**GET** `http://localhost:8080/api/v1/pautas/{id}`
 
 ###  Listar pautas (com paginação e ordenação)  
-**GET** `/api/v1/pautas`
+**GET** `http://localhost:8080/api/v1/pautas`
 
 ###  Atualizar uma pauta  
-**PUT** `/api/v1/pautas/{id}`
+**PUT** `http://localhost:8080/api/v1/pautas/{id}`
 
 ```json
 {
@@ -202,14 +209,14 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 ```
 
 ###  Excluir uma pauta  
-**DELETE** `/api/v1/pautas/{id}`
+**DELETE** `http://localhost:8080/api/v1/pautas/{id}`
 
 ---
 
 ## 🔹 Sessões de Votação
 
 ###  Criar uma sessão de votação  
-**POST** `/api/v1/sessoes`
+**POST** `http://localhost:8080/api/v1/sessoes`
 
 #### Abertura imediata:
 
@@ -239,13 +246,13 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 ```
 
 ###  Consultar status da sessão de votação  
-**GET** `/api/v1/sessoes/{id}`
+**GET** `http://localhost:8080/api/v1/sessoes/{id}`
 
 ###  Listar sessões (com paginação e ordenação)  
-**GET** `/api/v1/sessoes`
+**GET** `http://localhost:8080/api/v1/sessoes`
 
 ###  Atualizar período da sessão  
-**PUT** `/api/v1/sessoes/{id}/periodo`
+**PUT** `http://localhost:8080/api/v1/sessoes/{id}/periodo`
 
 #### Adicionar minutos:
 
@@ -268,7 +275,7 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 ## 🔹 Votos
 
 ###  Registrar voto  
-**POST** `/api/v1/votos`
+**POST** `http://localhost:8080/api/v1/votos`
 
 ```json
 {
@@ -279,17 +286,17 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 ```
 
 ###  Buscar voto por ID  
-**GET** `/api/v1/votos/{id}`
+**GET** `http://localhost:8080/api/v1/votos/{id}`
 
 ###  Atualizar voto (apenas durante sessão aberta)  
-**PUT** `/api/v1/votos/{id}`
+**PUT** `http://localhost:8080/api/v1/votos/{id}`
 
 ```json
 {
     "opcao": "NAO"
 }
 ```
-**GET** `/api/v1/votos/pautas/{pautaId}/resultado`
+**GET** `http://localhost:8080/api/v1/votos/pautas/{pautaId}/resultado`
 
 ---
 
@@ -315,7 +322,10 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 - Identificação única dos votantes (CPF)
 - Rastreabilidade nas votações
 
-**Motivação:** Entidade separada para garantir unicidade e permitir auditoria de votos.
+A entidade separada para garantir unicidade e permitir auditoria de votos.
+- Regra de Negócio Importante:
+  - Não é possível excluir um associado que está vinculado a uma pauta como criador
+  - O CPF deve ser único no sistema
 
 ####  Service:
 - **Criar:** Valida CPF único, usa Mapper para transformar DTO em entidade e retorna DTO de resposta.
@@ -325,9 +335,9 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 - **Deletar:** Só permite se não houver pautas criadas pelo associado.
 
 ####  DTOs:
-- `AssociadoRequest`
-- `AssociadoResponse`
-- `AssociadoListarResponse`
+- `AssociadoRequest` dados que o associado mandou o request.
+- `AssociadoResponse` seria os dados que seram enviados para o associado, como forma se ocutar dados sensiveis.
+- `AssociadoListarResponse` seria os dados que seram enviados para o associado, como forma se ocutar dados sensiveis.
 - `AssociadoDTO` (para relacionamentos)
 
 ---
@@ -337,22 +347,31 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 **Atributos principais:** `id`, `titulo`, `descricao`, `status`, `criador`  
 **Estados:** `CRIADA → EM_VOTACAO → APROVADA/RECUSADA/EMPATADA`  
 
-**Motivação:** Entidade central, com ciclo de vida bem definido para facilitar auditoria e transparência.
+#### Relacionamentos:
+- `ManyToOne` com `Associado` - Uma pauta é criada por um associado, e um associado pode criar múltiplas pautas
+ 
+A entidade central, com ciclo de vida bem definido para facilitar auditoria e transparência.
 
 ####  Service:
-- **Criar:** Valida existência do criador, status inicial CRIADA.
+- **Criar:** Valida existência do criador, status inicial CRIADA. Ela incia como criada como forma de que as as pautas são criadas quando o associado cadastra, e com base no iniciar sessão ele muda de fluxo. `CRIADA → EM_VOTACAO → APROVADA/RECUSADA/EMPATADA` para mostrar o resultado do status e dos votos.
 - **Buscar por ID:** Atualiza status automaticamente conforme regras de negócio.
 - **Listar:** Paginação, ordenação e atualização de status em lote.
 - **Atualizar:** Só permite se status for CRIADA.
 - **Deletar:** Não permite se estiver em votação.
 
+- Regras de Negócio Importantes: 
+  - Uma pauta só pode ser atualizada se estiver no status CRIADA
+  - Não é possível excluir uma pauta que já está em votação (EM_VOTACAO)
+  - Ao criar uma sessão para uma pauta, seu status é automaticamente alterado para EM_VOTACAO
+  - Uma pauta só pode ter uma única sessão de votação vinculada a ela
+
 ####  Método central:
 - `verificarEAtualizarStatusPauta`: Atualiza status da pauta conforme votos ao final da sessão.
 
 ####  DTOs:
-- `PautaRequest`
-- `PautaResponse`
-- `PautaAtualizarRequest`
+- `PautaRequest` dados que o associado vai enviar a requisição. 
+- `PautaResponse` seria os dados que seram enviados para o usuario, com forma de segurança de dados
+- `PautaAtualizarRequest` irá atualizar somente dados que foram enviados pelo usuario.
 
 ---
 
@@ -361,20 +380,33 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 **Atributos principais:** `id`, `dataAbertura`, `dataFechamento`, `status`, `pauta`  
 **Estados:** `FECHADA → ABERTA → FINALIZADA`  
 
-**Motivação:** Separada da pauta para permitir agendamento e controle de períodos.
+Separada da pauta para permitir agendamento e inicio de sessão imediata e controle de períodos.
+
+#### Relacionamentos:
+- `OneToOne` com `Pauta` - Uma sessão pertence exclusivamente a uma pauta e uma pauta só pode ter uma sessão de votação
 
 ####  Service:
-- **Criar:** Dois modos (imediato ou agendado), validações de datas, status inicial conforme contexto.
+- **Criar:** Dois modos (imediato ou agendado), validações de datas, status inicial conforme contexto. Esses dois modos de imediato ou agendado fazem com que o associado tenha maior controle para agendar uma pauta em tempos diferentes.
 - **Buscar/Listar:** Atualiza status da sessão e pauta conforme o tempo.
 - **Atualizar Período:** Permite extensão do período, com validações.
+  
+-Regras de Negócio Importantes:
+  - Se nenhuma duração for especificada, a sessão terá duração padrão de 1 minuto
+  - O período de votação só pode ser estendido, nunca reduzido
+  - Não é possível estender uma sessão que já foi finalizada
+  - A data de início deve ser anterior à data de fim
 
 ####  Método central:
-- `configurarStatusSessao`: Atualiza status da sessão e pauta, contabiliza votos ao finalizar.
+- `configurarStatusSessao`: Atualiza status da sessão e pauta, contabiliza votos ao finalizar. Seria usado como metodo central para que seja alterado de forma simples em um método.
+
+### Métodos auxiliares importantes:
+- `estaAberta()`: Verifica se a sessão está no período de votação
+- `deveSerFinalizada()`: Verifica se a sessão precisa ser finalizada
 
 ####  DTOs:
-- `SessaoVotacaoRequest`
-- `SessaoVotacaoResponse`
-- `SessaoVotacaoAtualizarRequest`
+- `SessaoVotacaoRequest` seram os dados enviados pelos associados.
+- `SessaoVotacaoResponse` será os dados que serão enviados para o associados.
+- `SessaoVotacaoAtualizarRequest` seram informados os dados que seram atualizados.
 
 ---
 
@@ -386,14 +418,11 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 - Um voto por associado por pauta (constraint de unicidade no banco)
 
 ####  Relacionamentos:
-- `ManyToOne` com `Associado`
-- `ManyToOne` com `Pauta`
+- `ManyToOne` com `Associado` Associado tem várias pautas, e so pode ter somente um voto.
+- `ManyToOne` com `Pauta` Voto tem várias pautas, e Voto so pode ter somente uma pauta.
 
 ####  Enum:
 - `OpcaoVoto` (`SIM` / `NAO`) – Garante integridade dos dados
-
-####  Timestamp:
-- `@CreationTimestamp`: Registro automático do momento do voto
 
 ---
 
@@ -405,23 +434,23 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 - Valida existência de associado, pauta e sessão aberta
 - Garante unicidade do voto
 - Salva e retorna DTO  
-**Justificativa:** Evita votos duplicados e só permite votos em sessões válidas
+Isso evita votos duplicados e só permite votos em sessões válidas
 
 ####  consultarResultado(Long pautaId)
 - Busca pauta
 - Conta votos `SIM` e `NÃO`
 - Retorna DTO com totais  
-**Justificativa:** Consulta eficiente com resposta clara para o usuário
+Faz com que a consulta seja eficiente com resposta clara para o usuário
 
 ####  atualizarVoto(Long id, VotoAtualizarRequest request)
 - Permite alteração apenas durante sessão aberta
 - Valida existência do voto e sessão
 - Atualiza apenas a opção  
-**Justificativa:** Dá flexibilidade ao usuário, com restrição temporal
+Dá flexibilidade ao usuário, com restrição temporal
 
 ####  buscarPorId(Long id)
 - Retorna o voto pelo ID  
-**Justificativa:** Permite auditoria e rastreabilidade
+Permite auditoria e rastreabilidade
 
 ---
 
@@ -474,7 +503,6 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 
 ### 6.4.  Containerização
 - `docker-compose` para facilitar testes e implantação
-- Multi-stage builds
 - Variáveis de ambiente via `.env`
 
 ### 6.5.  Testes
@@ -485,18 +513,12 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 
 ### 6.6.  Segurança
 - Bean Validation para entradas
-- Prevenção de SQL Injection com JPQL/prepared statements
 - Validações em múltiplas camadas
 
-### 6.7. Configurações de Tempo
-- Fuso horário padrão: `America/Sao_Paulo`
-- Formato ISO 8601 para datas
-- Validações temporais consistentes
 
-### 6.8. Monitoramento e Observabilidade
+### 6.7. Monitoramento e Observabilidade
 - Logs estratégicos em operações críticas
-- Configuração de níveis de log por ambiente
-- Formato padronizado para integração com ferramentas de análise
+
 
 ---
 ### 👁️ Configuração `.env`
