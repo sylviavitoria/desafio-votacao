@@ -395,7 +395,7 @@ Separada da pauta para permitir agendamento e inicio de sessão imediata e contr
 - **Buscar/Listar:** Atualiza status da sessão e pauta conforme o tempo.
 - **Atualizar Período:** Permite extensão do período, com validações.
   
--Regras de Negócio Importantes:
+- Regras de Negócio Importantes:
   - Se nenhuma duração for especificada, a sessão terá duração padrão de 1 minuto
   - O período de votação só pode ser estendido, nunca reduzido
   - Não é possível estender uma sessão que já foi finalizada
