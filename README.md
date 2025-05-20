@@ -96,13 +96,13 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 
 ## ✅ Funcionalidades
 
-### Associados
+### 👥 Associados
 
 - Cadastro e listagem por id de associados  
 - Atualização e exclusão de associados  
 - Paginação e ordenação na listagem de associados  
 
-### Pautas
+### 📝 Pautas
 
 - Cadastro de novas pautas com título, descrição e criador  
 - Consulta de pauta por ID com status atualizado  
@@ -111,7 +111,7 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 - Exclusão de pautas (quando não estão em votação)  
 - Contagem automática de votos  
 
-### Sessões de Votação
+### 🕒 Sessões de Votação
 
 - Abertura de sessões de votação para pautas  
 - Criação imediata ou agendamento para datas futuras  
@@ -120,7 +120,7 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 - Listagem de sessões com paginação e ordenação  
 - Atualização do período de votação (extensão do prazo)  
 
-### Votos
+### ⚖️ Votos
 
 - Registro de votos de associados em pautas  
 - Validação de sessão aberta e voto único por associado  
@@ -128,7 +128,7 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 - Atualização de votos durante a sessão aberta  
 - Consulta de resultado da votação 
 
-### Recursos Adicionais
+### ➕ Recursos Adicionais
 
 - Documentação completa com Swagger/OpenAPI  
 - Gerenciamento de exceções com mensagens amigáveis  
@@ -139,11 +139,23 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 - Perfis configuráveis para diferentes ambientes
 
 ---
+### 📋 Arquitetura:
 
-##  Tecnologias utilizadas
+- Camada de Controladores (Controller): Responsável por lidar com as requisições HTTP, direcionando-as para os serviços apropriados e retornando as respostas adequadas ao cliente.
+
+- Camada de Serviços (Service): Onde reside a lógica central do sistema; executa as regras de negócio e coordena o fluxo entre as demais camadas.
+
+- Camada de Repositórios (Repository): Encapsula o acesso ao banco de dados, realizando operações como consultas, salvamentos e exclusões de forma desacoplada.
+
+- Camada de DTOs e Mapeadores (DTOs e Mappers): Realiza a conversão entre entidades e objetos de transferência de dados, promovendo a separação entre o modelo de domínio e as representações utilizadas na comunicação.
+
+- Camada de Tratamento de Exceções (Exceptions): Centraliza o gerenciamento de erros, garantindo respostas claras e amigáveis para situações inesperadas.
+
+## 🚀 Tecnologias utilizadas
 
 - Java 21+
 - Spring Boot
+- Spring Data JPA
 - Maven
 - Docker
 - Jakarta Validation
@@ -153,6 +165,12 @@ O aplicativo envia uma requisição POST para a url informada e com o body defin
 - FlyWay
 
 ---
+
+## 📦 Tecnologias utilizadas nos testes
+- JUnit 5
+- Mockito
+- Spring Boot Test
+- MockMvc (para testes com endpoints REST)
 
 ## 📂 Estrutura dos Endpoints
 
@@ -313,11 +331,11 @@ Os endpoints de listagem (`GET /api/v1/associados`, `/api/v1/pautas`, `/api/v1/s
 - `size` (padrão: 10): Número de itens por página  
 - `sort` (opcional): Campo para ordenação (ex: `nome`, `titulo`, `dataAbertura`)
 
-#  Estrutura Completa do Sistema de Votação
+# 🏗️ Estrutura Completa do Sistema de Votação
 
 ---
 
-## 1.  Domínio e Modelagem
+## 1. 📐 Domínio e Modelagem
 
 ### 1.1.  Associado
 **Entidade:** Representa os membros com direito a voto  
