@@ -26,7 +26,7 @@ import lombok.Setter;
         2. Nova Data Fim:
         ```json
         {
-          "dataFim": "2025-05-27T11:00:00"
+          "dataFim": "2025-06-27T11:00:00"
         }
         ```
         """)

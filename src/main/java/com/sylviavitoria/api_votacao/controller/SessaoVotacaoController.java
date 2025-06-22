@@ -49,8 +49,8 @@ public class SessaoVotacaoController {
                                         @ExampleObject(name = "Agendamento", value = """
                                                         {
                                                           "pautaId": 1,
-                                                          "dataInicio": "2025-05-25T22:00:00",
-                                                          "dataFim": "2025-05-26T11:00:00"
+                                                          "dataInicio": "2025-06-25T22:00:00",
+                                                          "dataFim": "2025-06-26T11:00:00"
                                                         }
                                                         """)
                         })))
@@ -97,7 +97,7 @@ public class SessaoVotacaoController {
                                         """),
                         @ExampleObject(name = "Nova Data Fim", value = """
                                         {
-                                          "dataFim": "2025-05-27T00:00:00"
+                                          "dataFim": "2025-06-27T00:00:00"
                                         }
                                         """)
         })))

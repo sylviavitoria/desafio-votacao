@@ -22,7 +22,7 @@ public class PautaResponse {
     @Schema(description = "Descrição detalhada da pauta", example = "Discussão sobre os resultados financeiros de 2025")
     private String descricao;
     
-    @Schema(description = "Data e hora de criação da pauta", example = "2025-05-15T10:30:00")
+    @Schema(description = "Data e hora de criação da pauta", example = "2025-06-15T10:30:00")
     private LocalDateTime dataCriacao;
     
     @Schema(description = "Status atual da pauta", example = "CRIADA", allowableValues = {"CRIADA", "EM_VOTACAO", "ENCERRADA"})
