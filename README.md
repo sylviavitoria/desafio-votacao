@@ -562,3 +562,16 @@ docker compose up --build
 - **PostgreSQL** (recomendado para ambiente Docker):
   - **pgAdmin:** `http://localhost:5050`
   - Credenciais de login: Definidas no arquivo `.env`
+
+
+  # 🖼️ Interface Front-end
+
+O **VotaFácil** é uma aplicação web completa para gerenciamento de pautas e votações em assembleias. Desenvolvida com **React** e **TypeScript**, sua interface oferece uma experiência fluida e interativa, comunicando-se diretamente com a **API REST**. 
+
+A plataforma permite **cadastrar associados**, **criar pautas**, **iniciar sessões de votação**, **registrar votos** e **visualizar resultados** de forma simples e intuitiva.
+
+### 📁 Repositório Front-end
+Você pode acessar o repositório do front-end neste link: [desafio-votacao-front(VotaFácil)
+](https://github.com/sylviavitoria/desafio-votacao-front)
+
+
