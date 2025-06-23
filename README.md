@@ -564,7 +564,7 @@ docker compose up --build
   - Credenciais de login: Definidas no arquivo `.env`
 
 
-  # 🖼️ Interface Front-end
+# 🖼️ Interface Front-end
 
 O **VotaFácil** é uma aplicação web completa para gerenciamento de pautas e votações em assembleias. Desenvolvida com **React** e **TypeScript**, sua interface oferece uma experiência fluida e interativa, comunicando-se diretamente com a **API REST**. 
 
